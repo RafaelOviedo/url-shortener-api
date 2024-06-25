@@ -38,7 +38,7 @@ const Url = {
 
     try {
       const shortUrl = await generateRandomShortUrl();
-      Object.assign(req.body, { shortUrl: `http://localhost:3001/${shortUrl}`, shortUrlId: shortUrl });
+      Object.assign(req.body, { shortUrl: `https://liturl.vercel.app/${shortUrl}`, shortUrlId: shortUrl });
   
       const url = new UrlSchema(req.body);
   
