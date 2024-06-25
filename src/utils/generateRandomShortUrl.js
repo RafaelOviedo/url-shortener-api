@@ -1,10 +1,11 @@
 const crypto = require('crypto');
+const UserSchema = require('../models/User');
 
 const NUM_CHARS_SHORT_LINK = 7;
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 const ALPHABET_LENGTH = ALPHABET.length;
 
-function generateRandomShortUrl() {
+async function generateRandomShortUrl() {
     let result = new Array(NUM_CHARS_SHORT_LINK);
     
     while (true) {
@@ -14,7 +15,11 @@ function generateRandomShortUrl() {
         }
         let shortLink = result.join('');
         
-        return shortLink;
+        const isShortUrlStored = await UserSchema.exists({ shortUrlId: shortLink })
+
+        if (isShortUrlStored === null) {
+          return shortLink;
+        }
     }
 }
 

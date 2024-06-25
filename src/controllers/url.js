@@ -18,10 +18,18 @@ const Url = {
       res.status(500).send("Internal Server Error");
     }
   },
+  getShortUrl: async (req, res) => {
+    const { shortUrlId } = req.params;
+
+    const foundUrl = await UrlSchema.findOne({ shortUrlId: shortUrlId })
+    const longUrl = foundUrl.longUrl;
+
+    res.redirect(302, longUrl);
+  },
   createShortUrl: async (req, res) => {
     const { userId } = req.body;
-    const shortUrl = generateRandomShortUrl();
-    Object.assign(req.body, { shortUrl: `http://localhost:3001/${shortUrl}` });
+    const shortUrl = await generateRandomShortUrl();
+    Object.assign(req.body, { shortUrl: `http://localhost:3001/${shortUrl}`, shortUrlId: shortUrl });
 
     const url = new UrlSchema(req.body);
 
