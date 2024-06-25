@@ -12,32 +12,45 @@ const Url = {
 
       const urls = await UrlSchema.find(query);
 
-      res.status(200).send({ totalQty: urls.length, urls: urls })
+      res.status(200).send({ totalQty: urls.length, urls: urls });
     }
     catch (error) {
-      res.status(500).send("Internal Server Error");
+      res.status(500).send({ message: 'Internal Server Error', error });
     }
   },
   getShortUrl: async (req, res) => {
     const { shortUrlId } = req.params;
 
-    const foundUrl = await UrlSchema.findOne({ shortUrlId: shortUrlId })
-    const longUrl = foundUrl.longUrl;
+    try {
+      const foundUrl = await UrlSchema.findOne({ shortUrlId: shortUrlId });
+      const longUrl = foundUrl.longUrl;
+      await foundUrl.clicks++;
+      await foundUrl.save();
 
-    res.redirect(302, longUrl);
+      res.redirect(302, longUrl);
+    } 
+    catch (error) {
+      res.status(500).send({ message: 'Internal Server Error', error });
+    }    
   },
   createShortUrl: async (req, res) => {
     const { userId } = req.body;
-    const shortUrl = await generateRandomShortUrl();
-    Object.assign(req.body, { shortUrl: `http://localhost:3001/${shortUrl}`, shortUrlId: shortUrl });
 
-    const url = new UrlSchema(req.body);
-
-    if (userId) {
-      await url.save();
+    try {
+      const shortUrl = await generateRandomShortUrl();
+      Object.assign(req.body, { shortUrl: `http://localhost:3001/${shortUrl}`, shortUrlId: shortUrl });
+  
+      const url = new UrlSchema(req.body);
+  
+      if (userId) {
+        await url.save();
+      }
+  
+      res.status(201).send(url);
+    } 
+    catch (error) {
+      res.status(500).send({ message: 'Internal Server Error', error });
     }
-
-    res.status(201).send(url);
   }
 }
 

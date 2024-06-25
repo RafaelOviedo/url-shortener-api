@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const shortenRouter = require("./shorten");
+const urlRouter = require("./url");
 const usersRouter = require("./users");
 const authRouter = require("./auth");
 
@@ -10,11 +10,11 @@ router.get('/', (req, res) => {
   res.send('Hello url-shortener-api');
 });
 
-router.get('/:shortUrlId', url.getShortUrl);
-
 router.use('/auth', authRouter);
-router.use('/shorten', shortenRouter);
+router.use('/url', urlRouter);
 router.use('/users', usersRouter);
+
+router.get('/:shortUrlId', url.getShortUrl);
 
 router.get('*', (req, res) => {
   res.status(404).send('Not Found');
