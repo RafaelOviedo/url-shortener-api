@@ -8,7 +8,12 @@ const Url = {
     try {
       let query = {};
 
-      if (userId) { query = { userId: userId }; }
+      if (userId) {
+        query.userId = userId;
+      } 
+      else {
+        query.userId = { $exists: false };
+      }
 
       const urls = await UrlSchema.find(query);
 

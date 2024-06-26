@@ -5,7 +5,12 @@ const Auth = {
     const { email } = req.body;
 
     try {
-      const authUser = await UserSchema.find({ email: email })
+      const authUser = await UserSchema.findOne({ email: email })
+
+      if (!authUser) {
+        return res.status(404).send({ message: 'User not found', code: 404 });
+      }
+
       res.status(200).send(authUser);
     }
     catch (error) {
