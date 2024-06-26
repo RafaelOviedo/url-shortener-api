@@ -34,17 +34,13 @@ const Url = {
     }    
   },
   createShortUrl: async (req, res) => {
-    const { userId } = req.body;
-
     try {
       const shortUrl = await generateRandomShortUrl();
       Object.assign(req.body, { shortUrl: `https://liturl.vercel.app/${shortUrl}`, shortUrlId: shortUrl });
   
       const url = new UrlSchema(req.body);
-  
-      if (userId) {
-        await url.save();
-      }
+        
+      await url.save();
   
       res.status(201).send(url);
     } 
